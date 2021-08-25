@@ -98,7 +98,7 @@ print(args.verbosity)
 
 
 USERNAME = config.get("SkodaConnect","Username",fallback=None)
-PASSWORD = config.get("SkodaConnect","Password",fallback=None)
+PASSWORD = config.get("SkodaConnect","Password",fallback=None).strip("\"")
 
 INTERVAL = int(config.get("SkodaConnect","PollInterval",fallback=60))
 RECONNECT_MINUTES = int(config.get("SkodaConnect","MinutesBetweenReconnects",fallback=24*60))
