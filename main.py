@@ -115,14 +115,19 @@ if csv_Enabled.lower()=="yes":
 elif csv_Enabled.lower()=="no":
     csv_Enabled = False
 
+if InfluxDb_Enabled.lower()=="yes":
+    InfluxDb_Enabled=True
+elif InfluxDb_Enabled.lower()=="no":
+    InfluxDb_Enabled=False
+
 csv_Folder = config.get("CSV","Folder",fallback="logs")
 
 
 
-for key,item in config.items():
-    print(key)
-    for k,v in item.items():
-        print(k,v)
+# for key,item in config.items():
+#     print(key)
+#     for k,v in item.items():
+#         print(k,v)
 
 
 if csv_Enabled and csv_Folder!=None:
