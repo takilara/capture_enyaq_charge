@@ -97,16 +97,16 @@ print(args.verbosity)
 
 
 
-USERNAME = config.get("SkodaConnect","Username",fallback=None)
+USERNAME = config.get("SkodaConnect","Username",fallback=None).strip("\"")
 PASSWORD = config.get("SkodaConnect","Password",fallback=None).strip("\"")
 
 INTERVAL = int(config.get("SkodaConnect","PollInterval",fallback=60))
 RECONNECT_MINUTES = int(config.get("SkodaConnect","MinutesBetweenReconnects",fallback=24*60))
 
-InfluxDb_Enabled = config.get("InfluxDb","Enabled",fallback=False)
-InfluxDb_Host = config.get("InfluxDb","Host",fallback=None)
-InfluxDb_Database = config.get("InfluxDb","Database",fallback="sampledb")
-InfluxDb_Precision = config.get("InfluxDb","Precision",fallback="m")
+InfluxDb_Enabled = config.get("InfluxDb","Enabled",fallback=False).strip("\"")
+InfluxDb_Host = config.get("InfluxDb","Host",fallback=None).strip("\"")
+InfluxDb_Database = config.get("InfluxDb","Database",fallback="sampledb").strip("\"")
+InfluxDb_Precision = config.get("InfluxDb","Precision",fallback="m").strip("\"")
 
 
 csv_Enabled = config.get("CSV","Enabled",fallback=True)
