@@ -13,6 +13,8 @@ import csv
 import configparser
 import argparse
 
+# Code is based on example.py in the skodaconnect repo at from https://github.com/lendy007/skodaconnect
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -40,6 +42,8 @@ parser.add_argument("-ifdb","--influx_database", help="Influx Database")
 parser.add_argument("-ifp","--influx_precision", help="Influx Precision")
 parser.add_argument("-ce", action="store_true", help="Enable csv logging")
 parser.add_argument("-cf","--csv_folder", help="Folder to use for csv logging")
+parser.add_argument("-v", "--verbosity", action="count", default=0, help="increase output verbosity, -vv to enable debug logging")
+
 
 config.read("config.ini")
 args = parser.parse_args()
@@ -67,10 +71,27 @@ if args.csv_folder!=None:
     config["CSV"]["Folder"] = args.csv_folder
 
 
-logging.basicConfig(level=logging.DEBUG)
+
+#logging.basicConfig(level=logging.DEBUG)
+PRINTRESPONSE=False
+if args.verbosity==0:
+    PRINTRESPONSE = False
+    logging.basicConfig(level=logging.INFO)
+if args.verbosity==1:
+    PRINTRESPONSE = True
+    logging.basicConfig(level=logging.INFO)
+if args.verbosity>1:
+    PRINTRESPONSE = True
+    logging.basicConfig(level=logging.DEBUG)
+    
+log = logging.getLogger(__name__)
+
+log.debug("Debug message")
+log.info("Info message")
+print(args.verbosity)
 
 
-PRINTRESPONSE = True
+
 
 USERNAME = config.get("SkodaConnect","Username",fallback=None)
 PASSWORD = config.get("SkodaConnect","Password",fallback=None)
@@ -84,6 +105,8 @@ InfluxDb_Precision = config.get("InfluxDb","Precision",fallback="m")
 
 csv_Enabled = config.get("CSV","Enabled",fallback=True)
 csv_Folder = config.get("CSV","Folder",fallback="logs")
+
+
 
 for key,item in config.items():
     print(key)
@@ -100,92 +123,6 @@ if csv_Enabled and csv_Folder!=None:
 InfluxDb_Url = "{}/write?db={}&precision={}".format(InfluxDb_Host,InfluxDb_Database,InfluxDb_Precision)
 
 
-
-
-
-
-COMPONENTS = {
-    'sensor': 'sensor',
-    'binary_sensor': 'binary_sensor',
-    'lock': 'lock',
-    'device_tracker': 'device_tracker',
-    'switch': 'switch',
-}
-
-RESOURCES = [
-		"adblue_level",
-		"auxiliary_climatisation",
-		"battery_level",
-		"charge_max_ampere",
-		"charger_action_status",
-		"charging",
-                "charge_rate",
-                "charging_power",
-		"charging_cable_connected",
-		"charging_cable_locked",
-		"charging_time_left",
-		"climater_action_status",
-		"climatisation_target_temperature",
-		"climatisation_without_external_power",
-		"combined_range",
-		"combustion_range",
-                "departure1",
-                "departure2",
-                "departure3",
-		"distance",
-		"door_closed_left_back",
-		"door_closed_left_front",
-		"door_closed_right_back",
-		"door_closed_right_front",
-		"door_locked",
-		"electric_climatisation",
-		"electric_range",
-		"energy_flow",
-		"external_power",
-		"fuel_level",
-		"hood_closed",
-		"last_connected",
-		"lock_action_status",
-		"oil_inspection",
-		"oil_inspection_distance",
-		"outside_temperature",
-		"parking_light",
-		"parking_time",
-		"pheater_heating",
-		"pheater_status",
-		"pheater_ventilation",
-		"position",
-		"refresh_action_status",
-		"refresh_data",
-		"request_in_progress",
-		"request_results",
-		"requests_remaining",
-		"service_inspection",
-		"service_inspection_distance",
-		"sunroof_closed",
-		"trip_last_average_auxillary_consumption",
-		"trip_last_average_electric_consumption",
-		"trip_last_average_fuel_consumption",
-		"trip_last_average_speed",
-		"trip_last_duration",
-		"trip_last_entry",
-		"trip_last_length",
-		"trip_last_recuperation",
-		"trip_last_total_electric_consumption",
-		"trunk_closed",
-		"trunk_locked",
-		"vehicle_moving",
-		"window_closed_left_back",
-		"window_closed_left_front",
-		"window_closed_right_back",
-		"window_closed_right_front",
-		"window_heater",
-		"windows_closed"
-]
-
-def is_enabled(attr):
-    """Return true if the user has enabled the resource."""
-    return attr in RESOURCES
 
 async def main():
     """Main method."""
