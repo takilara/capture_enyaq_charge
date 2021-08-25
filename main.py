@@ -210,12 +210,14 @@ async def main():
                         row = {}
                         csv_columns = []
                         csv_columns.append("Time")
+                        ignore_categories = ["timers"]
                         row["Time"] = datetime.now().isoformat()
                         for category,measurements in vehicle._states.items():
-                            for measurement_name,value in measurements.items():
-                                key = "{}_{}".format(category,measurement_name)
-                                row[key]=value
-                                csv_columns.append(key)
+                            if category not in ignore_categories:
+                                for measurement_name,value in measurements.items():
+                                    key = "{}_{}".format(category,measurement_name)
+                                    row[key]=value
+                                    csv_columns.append(key)
                         
                         
                         print(row)
