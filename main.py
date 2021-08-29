@@ -228,6 +228,12 @@ async def main():
                                 writer.writeheader()
                             writer.writerow(row)
                             csvfile.flush()
+                        
+                        if InfluxDb_Enabled:
+                            try:
+                                r = requests.post(InfluxDb_Url, data = "{},{} {}".format("charging",tags,fields))
+                            except:
+                                log.warning("Could not post to InfluxDb")
 
                         print("Sleeping....")
                         print("Ctrl-C to exit!!")
@@ -238,8 +244,8 @@ async def main():
                             print("Failed")
                         
 
-                        if InfluxDb_Enabled:
-                            r = requests.post(InfluxDb_Url, data = "{},{} {}".format("charging",tags,fields))
+                        
+                                
                         time.sleep(5)
                         
                         timesincelogin = datetime.now()-logintime
@@ -251,6 +257,12 @@ async def main():
                 try:
                     csv_file.close()
                 except:
+                    pass
+
+                try:
+                    await connection.logout()
+                except:
+                    log.warning("Could not logout")
                     pass
 
 
